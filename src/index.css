@@ -58,6 +58,30 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.marker {
+  width: 30px;
+}
+.mapboxgl-ctrl-geocoder{
+  
+}
+.suggestions-wrapper{
+  background-color: #353647;
+
+}
+.suggestions{
+  list-style: none;
+}
+.suggestions > * {
+  padding: 5px;
+  cursor: pointer;
+}
+.mapboxgl-ctrl-geocoder input{
+  all: unset;
+  padding: 8px 20px;
+  background-color: #353647;
+  border-radius: 20px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
