@@ -22,8 +22,7 @@ export default function GeocoderControl(props: GeocoderControlProps) {
   function onLoading (){
 
   }
-  function onResults(e: any){
-    // console.log(e, 'LLLLLLL');
+  function onResults(){
     
   }
   function onResult(e: any){

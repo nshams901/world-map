@@ -1,11 +1,10 @@
 // import { useRef } from 'react';;
 // import { useMap } from '../hook/useMap';
-import { useEffect, useMemo, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import Map, { Marker, Source, Layer, MapLayerMouseEvent, CircleLayer } from 'react-map-gl';
 import { getEnvironments } from '../utils/getEnvironments';
 import marker from '../assets/marker.png'
 import GeocoderControl from './GeocoderControl'
-import { countriesLayer, highlightLayer } from '../components/map-style';
 const { VITE_KEY } = getEnvironments()
 
 interface HoverInfo {
@@ -13,13 +12,6 @@ interface HoverInfo {
     latitude: number,
     countyName: string | null | undefined
 }
-interface County {
-    properties: {
-        COUNTY: string
-    }
-}
-
-
   
   const layerStyle: CircleLayer = {
     id: 'point',
@@ -47,9 +39,8 @@ export const MapView = () => {
             countyName: county && county.properties?.COUNTY
         });
     }, []);
+console.log(hoverInfo);
 
-    const selectedCounty = (hoverInfo && hoverInfo.countyName) || '';
-    const filter = useMemo(() => ['in', 'COUNTY', selectedCounty], [selectedCounty]);
     useEffect(() => {
         navigator.geolocation.getCurrentPosition( (pos) => {
             setInitialPos({lat: pos.coords.latitude, lng: pos.coords.longitude})
