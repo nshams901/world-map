@@ -1,7 +1,7 @@
 // import { useRef } from 'react';;
 // import { useMap } from '../hook/useMap';
-import { useEffect, useCallback, useState } from 'react';
-import Map, { Marker, Source, Layer, MapLayerMouseEvent, CircleLayer } from 'react-map-gl';
+import { useEffect, useState } from 'react';
+import Map, { Marker, Source, Layer, CircleLayer } from 'react-map-gl';
 import { getEnvironments } from '../utils/getEnvironments';
 import marker from '../assets/marker.png'
 import GeocoderControl from './GeocoderControl'
@@ -47,11 +47,10 @@ export const MapView = () => {
     const getCountryDetails = async (code: string) => {
         let resp = await fetch(`http://api.worldbank.org/v2/country/${code.toUpperCase()}?format=json`);
         let r: any = await resp.json()
-        console.log(r, ':::::::::::::::::');
         
         setCountryData(r[1][0])
     }
-    // console.log(countryData, country, '+++++++++++++++++++++');
+    console.log(country, '+++++++++++++++++++++');
     
     return (
         <>
@@ -66,6 +65,7 @@ export const MapView = () => {
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 interactiveLayerIds={['country']}
                 onClick={ handleClick}
+                
             >
                 <Source id="my-data" type="geojson" >
                     <Layer {...layerStyle} />

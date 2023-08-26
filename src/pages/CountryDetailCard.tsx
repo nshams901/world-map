@@ -1,4 +1,3 @@
-import React from 'react'
 import './CountryCard.css'
 
 const CountryDetailCard = ( { data } : { data: any}) => {
