@@ -5,13 +5,8 @@ import Map, { Marker, Source, Layer, MapLayerMouseEvent, CircleLayer } from 'rea
 import { getEnvironments } from '../utils/getEnvironments';
 import marker from '../assets/marker.png'
 import GeocoderControl from './GeocoderControl'
+import CountryDetailCard from './CountryDetailCard'
 const { VITE_KEY } = getEnvironments()
-
-interface HoverInfo {
-    longitude: number,
-    latitude: number,
-    countyName: string | null | undefined
-}
   
   const layerStyle: CircleLayer = {
     id: 'point',
@@ -22,51 +17,67 @@ interface HoverInfo {
     }
   };
 export const MapView = () => {
-    const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
 
     const [initialPos, setInitialPos] = useState<{lat: number, lng: number}>({
         lat: 3.454,
         lng: 4.567
-    })
+    });
 
-    const onHover = useCallback((event: MapLayerMouseEvent) => {
-        // console.log(event.features, 'LLLLLLL');
-
-        const county = event.features && event.features[0];
-        setHoverInfo({
-            longitude: event.lngLat.lng,
-            latitude: event.lngLat.lat,
-            countyName: county && county.properties?.COUNTY
-        });
-    }, []);
-console.log(hoverInfo);
+    const [country, setCountry] = useState({ countryName: '', countryCode: ''});
+    const [countryData, setCountryData] = useState()
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition( (pos) => {
             setInitialPos({lat: pos.coords.latitude, lng: pos.coords.longitude})
         })
     }, [])
-    return (
-        <Map
-            mapboxAccessToken={VITE_KEY}
-            initialViewState={{
-                latitude: initialPos.lat,
-                longitude: initialPos.lng,
-                zoom: 3
-            }}
-            style={{ width: '100vw', height: '100vh' }}
-            mapStyle="mapbox://styles/mapbox/streets-v9"
-            interactiveLayerIds={['country']}
-            onMouseMove={onHover}
-        >
-            <Source id="my-data" type="geojson" >
-                <Layer {...layerStyle} />
-            </Source>
-            <Marker longitude={-100} latitude={40} anchor="bottom" >
-                <img className='marker' src={marker} />
-            </Marker>
 
-            <GeocoderControl mapboxAccessToken={VITE_KEY} position="top-left" />
-        </Map>
+    const handleClick = async( e: any) => {
+        const { lat, lng } = e.lngLat
+        
+        let resp = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${VITE_KEY}`)
+        let d  = await resp.json()
+        const features = d.features
+        const data = features.find(( item: any) => item.place_type.includes('country'));
+        
+        setCountry({ countryCode: data.properties.short_code, countryName: data.place_name});
+
+        getCountryDetails(data.properties.short_code)
+    }
+    const getCountryDetails = async (code: string) => {
+        let resp = await fetch(`http://api.worldbank.org/v2/country/${code.toUpperCase()}?format=json`);
+        let r: any = await resp.json()
+        console.log(r, ':::::::::::::::::');
+        
+        setCountryData(r[1][0])
+    }
+    // console.log(countryData, country, '+++++++++++++++++++++');
+    
+    return (
+        <>
+            <Map
+                mapboxAccessToken={VITE_KEY}
+                initialViewState={{
+                    latitude: initialPos.lat,
+                    longitude: initialPos.lng,
+                    zoom: 2
+                }}
+                style={{ width: '100vw', height: '100vh' }}
+                mapStyle="mapbox://styles/mapbox/streets-v9"
+                interactiveLayerIds={['country']}
+                onClick={ handleClick}
+            >
+                <Source id="my-data" type="geojson" >
+                    <Layer {...layerStyle} />
+                </Source>
+                <Marker longitude={initialPos.lng} latitude={initialPos.lat} anchor="bottom" >
+                    <img className='marker' src={marker} />
+                </Marker>
+
+                <GeocoderControl mapboxAccessToken={VITE_KEY} position="top-left" />
+            </Map>
+            
+            <CountryDetailCard data={countryData}/>
+        </>
     )
 }

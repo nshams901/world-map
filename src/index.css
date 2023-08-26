@@ -13,6 +13,15 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  color: white;
+}
+.text-black, .text-black> *{
+  color: black;
+}
 .map{
   height: 100vh;
   width: 100vw;
@@ -66,9 +75,10 @@ button:focus-visible {
 }
 .suggestions-wrapper{
   background-color: #353647;
-
+  margin-top: 5px;
 }
 .suggestions{
+  padding: 5px 10px;
   list-style: none;
 }
 .suggestions > * {
