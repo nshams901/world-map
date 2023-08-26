@@ -45,7 +45,7 @@ export const MapView = () => {
         getCountryDetails(data.properties.short_code)
     }
     const getCountryDetails = async (code: string) => {
-        let resp = await fetch(`http://api.worldbank.org/v2/country/${code.toUpperCase()}?format=json`);
+        let resp = await fetch(`https://api.worldbank.org/v2/country/${code.toUpperCase()}?format=json`);
         let r: any = await resp.json()
         
         setCountryData(r[1][0])
